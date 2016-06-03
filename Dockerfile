@@ -1,10 +1,10 @@
-FROM alpine:3.2
+FROM mhart/alpine-node:5.11.1
 
 ENV PASSENGER_VERSION="5.0.22" \
     PATH="/opt/passenger/bin:$PATH"
 
 RUN PACKAGES="ca-certificates ruby procps curl pcre libstdc++ libexecinfo" && \
-    BUILD_PACKAGES="build-base ruby-dev linux-headers curl-dev pcre-dev ruby-dev libexecinfo-dev" && \
+    BUILD_PACKAGES="build-base ruby-dev linux-headers curl-dev pcre-dev libexecinfo-dev" && \
     echo 'http://alpine.gliderlabs.com/alpine/v3.2/main' > /etc/apk/repositories && \
     echo 'http://alpine.gliderlabs.com/alpine/edge/testing' >> /etc/apk/repositories && \
     apk add --update $PACKAGES $BUILD_PACKAGES && \
@@ -36,4 +36,4 @@ RUN PACKAGES="ca-certificates ruby procps curl pcre libstdc++ libexecinfo" && \
 WORKDIR /usr/src/app
 EXPOSE 3000
 
-ENTRYPOINT ["passenger", "start", "--no-install-runtime", "--no-compile-runtime", "--no-download-binaries"]
+ENTRYPOINT ["passenger", "start", "--no-install-runtime", "--no-compile-runtime"]
