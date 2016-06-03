@@ -73,3 +73,7 @@ WORKDIR /usr/src/app
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
+
+COPY nginx.conf /opt/nginx/conf/
+COPY app.js /usr/src/app/ # autodetected by passenger as node
+COPY robots.txt /usr/src/app/public/
