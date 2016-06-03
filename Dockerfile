@@ -3,9 +3,9 @@ FROM mhart/alpine-node:5.11.1
 ENV PASSENGER_VERSION="5.0.22" \
     PATH="/opt/passenger/bin:$PATH"
 
-RUN PACKAGES="ca-certificates ruby procps curl pcre libstdc++ libexecinfo" && \
+RUN PACKAGES="ca-certificates ruby ruby-rake procps curl pcre libstdc++ libexecinfo" && \
     BUILD_PACKAGES="build-base ruby-dev linux-headers curl-dev pcre-dev libexecinfo-dev" && \
-    echo 'http://alpine.gliderlabs.com/alpine/v3.2/main' > /etc/apk/repositories && \
+    echo 'http://alpine.gliderlabs.com/alpine/v3.3/main' > /etc/apk/repositories && \
     echo 'http://alpine.gliderlabs.com/alpine/edge/testing' >> /etc/apk/repositories && \
     apk add --update $PACKAGES $BUILD_PACKAGES && \
 # download and extract
@@ -13,7 +13,7 @@ RUN PACKAGES="ca-certificates ruby procps curl pcre libstdc++ libexecinfo" && \
     curl -L https://s3.amazonaws.com/phusion-passenger/releases/passenger-$PASSENGER_VERSION.tar.gz | tar -xzf - -C /opt && \
     mv /opt/passenger-$PASSENGER_VERSION /opt/passenger && \
     export EXTRA_PRE_CFLAGS='-O' EXTRA_PRE_CXXFLAGS='-O' EXTRA_LDFLAGS='-lexecinfo' && \
-# compile agent
+# compile passenger
     passenger-config compile-agent --auto --optimize && \
     passenger-config install-standalone-runtime --auto --url-root=fake --connect-timeout=1 && \
     passenger-config build-native-support && \
@@ -29,9 +29,12 @@ RUN PACKAGES="ca-certificates ruby procps curl pcre libstdc++ libexecinfo" && \
 # Cleanup
     passenger-config validate-install --auto && \
     apk del $BUILD_PACKAGES && \
-    rm -rf /var/cache/apk/* \
+    rm -rf \
         /tmp/* \
-        /opt/passenger/doc
+        /opt/passenger/doc \
+        /usr/share/doc \
+        /usr/share/man \
+        /var/cache/apk/*
 
 WORKDIR /usr/src/app
 EXPOSE 3000
